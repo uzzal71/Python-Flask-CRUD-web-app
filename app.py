@@ -4,8 +4,8 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    # return render_template('index.html')
-    return redirect(url_for('about'))
+    fruits = ['Apple', '', 'Orange']
+    return render_template('index.html', fruits=fruits)
 
 @app.route('/about')
 def about():
