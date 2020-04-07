@@ -19,21 +19,18 @@ mysql = MySQL(app)
 @app.route('/', methods=['GET', 'POST'])
 def index():
     cur = mysql.connection.cursor()
-    result_value = cur.execute("SELECT * FROM user")
-    if result_value > 0:
-        users = cur.fetchall()
-        print(users)
-
-    if request.method == 'POST':
-        # return 'Successfully registered'
-        return request.form['password']
-
-
+    if cur.execute("INSERT INTO user(user_name) VALUES('Nasir')"):
+        mysql.connection.commit()
+        return 'success', 201
     return render_template('index.html')
 
 @app.route('/about')
 def about():
     return render_template('about.html')
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return 'This page was not found'
 
 @app.route('/css')
 def css():
