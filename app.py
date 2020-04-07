@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_bootstrap import Bootstrap
 from flask_mysqldb import MySQL
 import yaml
@@ -16,13 +16,19 @@ app.config['MYSQL_DB'] = 'my_database'
 mysql = MySQL(app)
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
     cur = mysql.connection.cursor()
     result_value = cur.execute("SELECT * FROM user")
     if result_value > 0:
         users = cur.fetchall()
         print(users)
+
+    if request.method == 'POST':
+        # return 'Successfully registered'
+        return request.form['password']
+
+
     return render_template('index.html')
 
 @app.route('/about')
