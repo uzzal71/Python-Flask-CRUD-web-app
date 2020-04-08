@@ -26,10 +26,12 @@ app.config['SECRET_KEY'] = os.urandom(24)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    '''
     cur = mysql.connection.cursor()
     if cur.execute("INSERT INTO user(user_name) VALUES('Nasir')"):
         mysql.connection.commit()
         return 'success', 201
+    '''
     return render_template('index.html')
 
 @app.route('/about')
