@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block body %}
+<table class="table">
+  <tr>
+    <th>#</th>
+    <th>Name</th>
+    <th>Age</th>
+  </tr>
+  {% for employee in employees %}
+  <tr>
+    <td>#</td>
+    <td>{{ employee.name }}</td>
+    <td>{{ employee.age }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
