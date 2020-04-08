@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, session
 from flask_bootstrap import Bootstrap
 from flask_mysqldb import MySQL
 import yaml
+import os
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -17,6 +18,8 @@ app.config['MYSQL_DB'] = 'employee_data'
 app.config['MYSQL_CURSORCLASS'] = "DictCursor"
 
 mysql = MySQL(app)
+
+app.config['SECRET_KEY'] = os.urandom(24)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -48,6 +51,7 @@ def employees():
     result_value = cur.execute("SELECT * FROM employee")
     if result_value > 0:
         employees = cur.fetchall()
+        session['username'] = employees[0]['name']
     return render_template('employees.html', employees=employees)
 
 @app.errorhandler(404)
