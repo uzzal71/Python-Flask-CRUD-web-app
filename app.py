@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, flash
 from flask_bootstrap import Bootstrap
 from flask_mysqldb import MySQL
 import yaml
@@ -41,13 +41,16 @@ def about():
 @app.route('/employee', methods=['GET', 'POST'])
 def employee():
     if request.method == 'POST':
-        form = request.form
-        name = form['name']
-        age = form['age']
-        cur = mysql.connection.cursor()
-        name = generate_password_hash(name)
-        cur.execute("INSERT INTO employee(name, age) VALUES(%s, %s)", (name, age))
-        mysql.connection.commit()
+        try:
+            form = request.form
+            name = form['name']
+            age = form['age']
+            cur = mysql.connection.cursor()
+            cur.execute("INSERT INTO employee(name, age) VALUES(%s, %s)", (name, age))
+            mysql.connection.commit()
+            flash('Successfully inserted data', 'success')
+        except:
+            flash('Failed to insert data', 'danger')
     return render_template('employee.html')
 
 @app.route('/employees')
@@ -56,9 +59,7 @@ def employees():
     result_value = cur.execute("SELECT * FROM employee")
     if result_value > 0:
         employees = cur.fetchall()
-        session['username'] = employees[0]['name']
-        return str(check_password_hash(employees[0]['name'], 'sunday'))
-    # return render_template('employees.html', employees=employees)
+    return render_template('employees.html', employees=employees)
 
 @app.errorhandler(404)
 def page_not_found(e):
