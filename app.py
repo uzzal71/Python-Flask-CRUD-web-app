@@ -3,6 +3,8 @@ from flask_bootstrap import Bootstrap
 from flask_mysqldb import MySQL
 import yaml
 import os
+from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -41,6 +43,7 @@ def employee():
         name = form['name']
         age = form['age']
         cur = mysql.connection.cursor()
+        name = generate_password_hash(name)
         cur.execute("INSERT INTO employee(name, age) VALUES(%s, %s)", (name, age))
         mysql.connection.commit()
     return render_template('employee.html')
@@ -52,7 +55,8 @@ def employees():
     if result_value > 0:
         employees = cur.fetchall()
         session['username'] = employees[0]['name']
-    return render_template('employees.html', employees=employees)
+        return str(check_password_hash(employees[0]['name'], 'sunday'))
+    # return render_template('employees.html', employees=employees)
 
 @app.errorhandler(404)
 def page_not_found(e):
